@@ -37,10 +37,8 @@ different command prompts, so make sure you use the right one when compiling.
 
 ## Platform Information
 
-|------------------|------------|
 | Operating System | Library    |
-|------------------|------------|
+| ---------------- | ---------- |
 | Windows          | UWP        |
 | macOS            | WebKit     |
 | Anything Else    | Webkit2GTK |
-|------------------|------------|
