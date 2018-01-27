@@ -16,13 +16,14 @@ use self::webkit2gtk::{
     WebViewExtManual
 };
 use std::cell::RefCell;
+use std::process;
 use std::rc::Rc;
 
 thread_local! {
     static WEBVIEW: RefCell<Option<WebView>> = RefCell::new(None);
 }
 
-pub fn start<H: Handler>(opts: Options<H>) {
+pub fn start<H: Handler>(opts: Options<H>) -> ! {
     let handler = Rc::new(RefCell::new(opts.handler));
 
     // Initialize GTK.
@@ -80,7 +81,7 @@ pub fn start<H: Handler>(opts: Options<H>) {
     scripts.register_script_message_handler("x");
 
     scripts.add_script(&UserScript::new(
-        "window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); }",
+        "window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); };",
         UserContentInjectedFrames::TopFrame,
         UserScriptInjectionTime::Start,
         &[], // Whitelisted URIs.
@@ -92,7 +93,7 @@ pub fn start<H: Handler>(opts: Options<H>) {
     window.connect_delete_event({
         let handler = handler.clone();
         move |_, _| {
-            handler.borrow_mut().close();
+            handler.borrow_mut().suspend(unsafe { Tether::new() });
             gtk::main_quit();
             gtk::Inhibit(false)
         }
@@ -117,6 +118,10 @@ pub fn start<H: Handler>(opts: Options<H>) {
     // Run the main loop.
 
     gtk::main();
+
+    // Exit successfully.
+
+    process::exit(0)
 }
 
 pub fn load(html: &str) {

@@ -1,3 +1,11 @@
+#![deny(missing_docs)]
+
+//! Lets you open and talk to a single cross-platform web view.
+//!
+//! The webpage also has some extra capabilities:
+//! - `window.tether(string)` sends a message to your application.
+//! - `document.title` sets the window's title.
+
 #[macro_use]
 extern crate cfg_if;
 
@@ -12,31 +20,51 @@ mod platform;
 pub use handler::*;
 pub use options::*;
 
-//TODO: Use !impl instead of PhantomData.
+//TODO: Information on additional libraries.
+// - File picker.
+// - Cross-platform packager.
+// - Application Data directories.
+
+//TODO: TodoMVC example.
 
 static LOADED: AtomicBool = ATOMIC_BOOL_INIT;
 
+/// A link between the web view and your application.
 #[derive(Clone, Copy)]
 pub struct Tether(PhantomData<*mut ()>);
 
 impl Tether {
+    /// Creates a new window builder.
+    ///
+    /// This is usually one of the first functions you call in your application.
     pub fn builder() -> Options<'static, ()> {
         Options::new()
     }
 
+    /// Evaluates some JavaScript in the current webpage.
     pub fn eval(self, js: &str) {
         platform::eval(js)
     }
 
+    /// Sets the current webpage to the provided HTML string.
     pub fn load(self, html: &str) {
         platform::load(html)
     }
 
+    /// Schedules the provided function to eventually run on the UI thread.
+    ///
+    /// This is the only way to change the user interface from another thread.
     pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
-        platform::dispatch(f)
+        if LOADED.load(SeqCst) {
+            platform::dispatch(f)
+        }
     }
 
-    pub fn start<H: Handler>(opts: Options<H>) {
+    /// Opens the window with the provided options.
+    ///
+    /// This function may or may not return after the window is closed, so it's
+    /// probably a good idea to assume that it doesn't return.
+    pub fn start<H: Handler>(opts: Options<H>) -> ! {
         if !LOADED.swap(true, SeqCst) {
             platform::start(opts)
         } else {
