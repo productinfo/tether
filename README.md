@@ -3,9 +3,9 @@
 [![Cargo](https://img.shields.io/crates/v/tether.svg)](https://crates.io/crates/tether)
 [![Documentation](https://docs.rs/tether/badge.svg)](https://docs.rs/tether)
 
-- [Getting Started](#Getting-Started)
-- [Compiling on Windows](#Compiling-on-Windows)
-- [Platform Information](#Platform-Information)
+- [Getting Started](#getting-started)
+- [Usage on Windows](#usage-on-windows)
+- [Platform Information](#platform-information)
 
 Extremely simple bindings to the OS' web view, for anyone who wants to make a
 GUI application in Rust.
@@ -16,7 +16,7 @@ There's no getting started guide, but it'd be nice if you made one! On the other
 hand, the API surface is *tiny*, so reading an [example](examples) and maybe the
 [documentation](https://docs.rs/tether) is the way to go.
 
-## Compiling on Windows
+## Usage on Windows
 
 You need to add `#![windows_subsystem = "windows"]` to the top of your
 `main.rs`, like in the [minimal example](eaxmples/minimal.rs). This tells
@@ -37,10 +37,10 @@ different command prompts, so make sure you use the right one when compiling.
 
 ## Platform Information
 
-+------------------+------------+
+|------------------|------------|
 | Operating System | Library    |
-+------------------+------------+
+|------------------|------------|
 | Windows          | UWP        |
 | macOS            | WebKit     |
 | Anything Else    | Webkit2GTK |
-+------------------+------------+
+|------------------|------------|
