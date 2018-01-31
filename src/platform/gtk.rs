@@ -1,4 +1,4 @@
-use {Handler, Options, Tether};
+use {glib, gtk, Handler, Options, Tether};
 use gtk::{ContainerExt, WidgetExt, GtkWindowExt, WindowType};
 use std::cell::RefCell;
 use std::process;

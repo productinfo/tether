@@ -35,13 +35,6 @@ mod platform;
 pub use handler::*;
 pub use options::*;
 
-//TODO: Information on additional libraries.
-// - File picker.
-// - Cross-platform packager.
-// - Application Data directories.
-
-//TODO: TodoMVC example.
-
 static LOADED: AtomicBool = ATOMIC_BOOL_INIT;
 
 /// A link between the web view and your application.
