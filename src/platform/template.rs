@@ -27,6 +27,6 @@ pub fn eval(_: &str) {
     unimplemented!()
 }
 
-pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
+pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(_: F) {
     unimplemented!()
 }

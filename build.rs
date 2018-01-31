@@ -2,7 +2,7 @@
 extern crate cfg_if;
 
 cfg_if! {
-    if #[cfg(windows)] {
+    if #[cfg(target_os = "windows")] {
         extern crate cc;
 
         fn main() {
@@ -12,9 +12,13 @@ cfg_if! {
                 .flag("/ZW")
                 .flag("/EHsc")
                 .compile("tether.lib");
-            println!("cargo:rustc-link-lib=runtimeobject");
+            println!("cargo:rustc-link-lib=dylib=runtimeobject");
         }
-    } else {
+    } else if #[cfg(target_os = "macos")] {
+        fn main() {
+            println!("cargo:rustc-link-lib=framework=WebKit");
+        }
+    }else {
         fn main() {}
     }
 }

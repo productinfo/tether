@@ -1,10 +1,9 @@
-extern crate glib;
-extern crate gtk;
-extern crate webkit2gtk;
-
 use {Handler, Options, Tether};
-use self::gtk::{ContainerExt, WidgetExt, GtkWindowExt, WindowType};
-use self::webkit2gtk::{
+use gtk::{ContainerExt, WidgetExt, GtkWindowExt, WindowType};
+use std::cell::RefCell;
+use std::process;
+use std::rc::Rc;
+use webkit2gtk::{
     UserContentInjectedFrames,
     UserContentManager,
     UserContentManagerExt,
@@ -15,9 +14,6 @@ use self::webkit2gtk::{
     WebViewExt,
     WebViewExtManual
 };
-use std::cell::RefCell;
-use std::process;
-use std::rc::Rc;
 
 thread_local! {
     static WEBVIEW: RefCell<Option<WebView>> = RefCell::new(None);

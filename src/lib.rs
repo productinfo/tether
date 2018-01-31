@@ -9,6 +9,21 @@
 #[macro_use]
 extern crate cfg_if;
 
+cfg_if! {
+    if #[cfg(target_os = "windows")] {
+        // No runtime dependencies.
+    } else if #[cfg(target_os = "macos")] {
+        extern crate cocoa;
+        extern crate dispatch;
+        #[macro_use]
+        extern crate objc;
+    } else {
+        extern crate glib;
+        extern crate gtk;
+        extern crate webkit2gtk;
+    }
+}
+
 use std::marker::PhantomData;
 use std::sync::atomic::{ATOMIC_BOOL_INIT, AtomicBool};
 use std::sync::atomic::Ordering::SeqCst;
