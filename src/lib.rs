@@ -76,9 +76,6 @@ impl Tether {
     }
 
     /// Opens the window with the provided options.
-    ///
-    /// This function may or may not return after the window is closed, so it's
-    /// probably a good idea to assume that it doesn't return.
     pub fn start<H: Handler>(opts: Options<H>) -> ! {
         if !LOADED.swap(true, SeqCst) {
             platform::start(opts)
