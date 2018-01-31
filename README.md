@@ -12,8 +12,9 @@ GUI application in Rust.
 
 ## Getting Started
 
-There's no getting started guide, but it'd be nice if you made one! On the other
-hand, the API surface is *tiny*, so reading an [example](examples) and maybe the
+There's no getting started guide, but it'd be nice if you made one!
+
+The API surface is *tiny*, so reading an [example](examples) and maybe the
 [documentation](https://docs.rs/tether) is the way to go.
 
 ## Usage on Windows
