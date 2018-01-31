@@ -21,10 +21,9 @@ The API surface is *tiny*, so reading an [example](examples) and maybe the
 
 You need to add `#![windows_subsystem = "windows"]` to the top of your
 `main.rs`, like in the [minimal example](eaxmples/minimal.rs). This tells
-Windows that you don't want a console window.
-
-You also have to run the executable in the UWP sandbox, or it'll stack overflow.
-The simplest way to do this is to [make an app manifest](https://docs.microsoft.com/en-us/uwp/schemas/appxpackage/how-to-create-a-basic-package-manifest),
+Windows that you don't want a console window. You also have to run the
+executable in the UWP sandbox, or it'll stack overflow. The simplest way to do
+this is to [make an app manifest](https://docs.microsoft.com/en-us/uwp/schemas/appxpackage/how-to-create-a-basic-package-manifest),
 making sure to add appropriate permissions, and run the following script after a
 build:
 
