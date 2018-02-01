@@ -1,0 +1,19 @@
+<script>
+function add() {
+    let input = document.getElementById('newItem');
+    window.tether('add:' + input.value);
+}
+
+function remove(el) {
+    let list = document.getElementById('list');
+    let tasks = Array.from(list.querySelectorAll(''));
+    let i = el.parentNode.children.indexOf(el);
+}
+</script>
+
+<div id='header'>
+    <input type='text' id='newItem' placeholder='New Item...'>
+    <button onclick='add()'>Add</button>
+</div>
+
+<ul id='list'></ul>
