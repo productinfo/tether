@@ -40,7 +40,7 @@ pub use options::*;
 
 static LOADED: AtomicBool = ATOMIC_BOOL_INIT;
 
-/// Creates a new window builder. You should usually call this first!
+/// Creates a new window builder. You should probably call this first!
 pub fn builder() -> Options<'static, ()> {
     Options::new()
 }
