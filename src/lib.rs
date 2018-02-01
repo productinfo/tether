@@ -3,6 +3,7 @@
 //! Lets you open and talk to a single cross-platform web view.
 //!
 //! The webpage also has some extra capabilities:
+//!
 //! - `window.tether(string)` sends a message to your application.
 //! - `document.title` sets the window's title.
 
@@ -28,10 +29,12 @@ use std::marker::PhantomData;
 use std::sync::atomic::{ATOMIC_BOOL_INIT, AtomicBool};
 use std::sync::atomic::Ordering::SeqCst;
 
+mod escape;
 mod handler;
 mod options;
 mod platform;
 
+pub use escape::*;
 pub use handler::*;
 pub use options::*;
 
