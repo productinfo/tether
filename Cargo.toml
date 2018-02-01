@@ -5,11 +5,17 @@ authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 description = "Extremely simple bindings to an OS web view."
 repository = "https://github.com/quadrupleslap/tether"
 
+[features]
+stub = []
+
 [dependencies]
 cfg-if = "0.1"
 
 [build-dependencies]
 cfg-if = "0.1"
+
+[package.metadata.docs.rs]
+features = ["stub"]
 
 # --- Windows --- #
 

@@ -2,7 +2,9 @@
 extern crate cfg_if;
 
 cfg_if! {
-    if #[cfg(target_os = "windows")] {
+    if #[cfg(feature = "stub")] {
+        fn main() {}
+    } else if #[cfg(target_os = "windows")] {
         extern crate cc;
 
         fn main() {
@@ -18,7 +20,7 @@ cfg_if! {
         fn main() {
             println!("cargo:rustc-link-lib=framework=WebKit");
         }
-    }else {
+    } else {
         fn main() {}
     }
 }
