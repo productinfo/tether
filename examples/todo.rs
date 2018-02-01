@@ -82,7 +82,7 @@ impl Handler for App {
     }
 }
 
-#[allow(unused_code)]
+#[allow(dead_code)]
 struct Task {
     name: String,
     done: bool,
