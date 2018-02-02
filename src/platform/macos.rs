@@ -1,6 +1,6 @@
 #![allow(non_snake_case, non_upper_case_globals)]
 
-use {Handler, Options, Tether};
+use {Handler, Options, Window};
 use cocoa::appkit::{
     NSApplicationActivationPolicyRegular,
     NSApplicationTerminateReply,
@@ -59,13 +59,13 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
             message: { extern "C" fn message<H: Handler>(h: *mut c_void, s: &str) {
                 unsafe {
                     let h = h as *mut H;
-                    (*h).message(Tether::new(), s)
+                    (*h).message(Window::new(), s)
                 }
             }; message::<H> },
             suspend: { extern "C" fn suspend<H: Handler>(h: *mut c_void) {
                 unsafe {
                     let h = h as *mut H;
-                    (*h).suspend(Tether::new())
+                    (*h).suspend(Window::new())
                 }
             }; suspend::<H> },
             drop: { extern "C" fn drop<H: Handler>(h: *mut c_void) {
@@ -139,9 +139,9 @@ pub fn eval(js: &str) {
     })
 }
 
-pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
+pub fn dispatch<F: FnOnce(Window) + Send + 'static>(f: F) {
     Queue::main().async(move || {
-        f(unsafe { Tether::new() });
+        f(unsafe { Window::new() });
     });
 }
 

@@ -1,4 +1,4 @@
-use {glib, gtk, Handler, Options, Tether};
+use {glib, gtk, Handler, Options, Window};
 use gtk::{ContainerExt, WidgetExt, GtkWindowExt, WindowType};
 use std::cell::RefCell;
 use std::process;
@@ -66,7 +66,7 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
             if let (Some(val), Some(ctx)) = (val, ctx) {
                 if let Some(msg) = val.to_string(&ctx) {
                     handler.borrow_mut().message(
-                        unsafe { Tether::new() },
+                        unsafe { Window::new() },
                         &msg,
                     )
                 }
@@ -89,7 +89,7 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
     window.connect_delete_event({
         let handler = handler.clone();
         move |_, _| {
-            handler.borrow_mut().suspend(unsafe { Tether::new() });
+            handler.borrow_mut().suspend(unsafe { Window::new() });
             gtk::main_quit();
             gtk::Inhibit(false)
         }
@@ -140,10 +140,10 @@ pub fn eval(js: &str) {
     });
 }
 
-pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
+pub fn dispatch<F: FnOnce(Window) + Send + 'static>(f: F) {
     let mut f = Some(f);
     glib::idle_add(move || {
-        f.take().unwrap()(unsafe { Tether::new() });
+        f.take().unwrap()(unsafe { Window::new() });
         glib::Continue(false)
     });
 }

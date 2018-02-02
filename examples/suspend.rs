@@ -2,10 +2,10 @@
 
 extern crate tether;
 
-use tether::{Handler, Tether};
+use tether::{Handler, Window};
 
 fn main() {
-    Tether::builder()
+    tether::builder()
         .html("
         	<p>Try closing me! On Windows, try minimizing me, too!</p>
         	<input placeholder='A pointless text field!'>
@@ -17,7 +17,7 @@ fn main() {
 struct MyHandler;
 
 impl Handler for MyHandler {
-    fn suspend(&mut self, win: Tether) {
+    fn suspend(&mut self, win: Window) {
         win.eval("document.body.innerHTML += '<p>Now would be a good time to save things.</p>';");
         println!("Now would be a good time to save things.");
     }

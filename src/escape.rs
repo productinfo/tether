@@ -6,10 +6,10 @@ use std::fmt::Write;
 /// # Example
 ///
 /// ```rust,no_run
-/// # use tether::Tether;
+/// # use tether::Window;
 /// # use std::mem;
 /// #
-/// # let win: Tether = unsafe { mem::uninitialized() };
+/// # let win: Window = unsafe { mem::uninitialized() };
 /// #
 /// let string = "Hello, world!";
 ///

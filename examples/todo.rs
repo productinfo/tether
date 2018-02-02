@@ -10,10 +10,10 @@
 extern crate tether;
 
 use std::fmt::Write;
-use tether::{Handler, Tether};
+use tether::{Handler, Window};
 
 fn main() {
-    Tether::builder()
+    tether::builder()
         .html(include_str!("todo.html"))
         .handler(App::new())
         .start();
@@ -32,7 +32,7 @@ impl App {
 }
 
 impl Handler for App {
-    fn message(&mut self, win: Tether, msg: &str) {
+    fn message(&mut self, win: Window, msg: &str) {
         // Commands
         // --------
         // add:{task}
@@ -82,6 +82,7 @@ impl Handler for App {
     }
 }
 
+#[allow(unused_code)]
 struct Task {
     name: String,
     done: bool,

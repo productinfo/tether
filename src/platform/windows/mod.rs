@@ -1,4 +1,4 @@
-use {Handler, Options, Tether};
+use {Handler, Options, Window};
 use std::{process, slice, str};
 use std::os::raw::{c_int, c_void};
 
@@ -22,12 +22,12 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
 
 unsafe extern "C" fn message<H: Handler>(handler: *mut c_void, msg: TetherString) {
     let handler = handler as *mut H;
-    (*handler).message(Tether::new(), msg.to_str());
+    (*handler).message(Window::new(), msg.to_str());
 }
 
 unsafe extern "C" fn suspend<H: Handler>(handler: *mut c_void) {
     let handler = handler as *mut H;
-    (*handler).suspend(Tether::new());
+    (*handler).suspend(Window::new());
 }
 
 unsafe extern "C" fn release<H: Handler>(handler: *mut c_void) {
@@ -47,7 +47,7 @@ pub fn eval(js: &str) {
     };
 }
 
-pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
+pub fn dispatch<F: FnOnce(Window) + Send + 'static>(f: F) {
     unsafe {
         tether_dispatch(
             Box::into_raw(Box::new(f)) as *mut c_void,
@@ -55,8 +55,8 @@ pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
         )
     };
 
-    unsafe extern "C" fn exec<F: FnOnce(Tether) + Send + 'static>(f: *mut c_void) {
-        Box::from_raw(f as *mut F)(Tether::new());
+    unsafe extern "C" fn exec<F: FnOnce(Window) + Send + 'static>(f: *mut c_void) {
+        Box::from_raw(f as *mut F)(Window::new());
     }
 }
 

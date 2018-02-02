@@ -13,7 +13,7 @@
 //! Freedoms:
 //! - You may kill the application once the window has been closed.
 
-use {Handler, Options, Tether};
+use {Handler, Options, Window};
 
 pub fn start<H: Handler>(_: Options<H>) -> ! {
     unimplemented!()
@@ -27,6 +27,6 @@ pub fn eval(_: &str) {
     unimplemented!()
 }
 
-pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(_: F) {
+pub fn dispatch<F: FnOnce(Window) + Send + 'static>(_: F) {
     unimplemented!()
 }

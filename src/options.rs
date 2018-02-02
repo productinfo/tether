@@ -1,4 +1,4 @@
-use {Handler, Tether};
+use {start, Handler};
 
 /// Provides some configuration options for the window.
 pub struct Options<'a, H> {
@@ -56,6 +56,6 @@ impl<'a, H> Options<'a, H> {
 impl<'a, H: Handler> Options<'a, H> {
     /// Opens the window.
     pub fn start(self) -> ! {
-        Tether::start(self)
+        start(self)
     }
 }

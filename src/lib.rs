@@ -40,18 +40,33 @@ pub use options::*;
 
 static LOADED: AtomicBool = ATOMIC_BOOL_INIT;
 
+/// Creates a new window builder. You should usually call this first!
+pub fn builder() -> Options<'static, ()> {
+    Options::new()
+}
+
+/// Schedules the provided function to eventually run on the UI thread.
+///
+/// This is the only way to talk to the window from another thread.
+pub fn dispatch<F: FnOnce(Window) + Send + 'static>(f: F) {
+    if LOADED.load(SeqCst) {
+        platform::dispatch(f)
+    }
+}
+
+fn start<H: Handler>(opts: Options<H>) -> ! {
+    if !LOADED.swap(true, SeqCst) {
+        platform::start(opts)
+    } else {
+        panic!("Tried to initialize the window more than once!")
+    }
+}
+
 /// A link between the web view and your application.
 #[derive(Clone, Copy)]
-pub struct Tether(PhantomData<*mut ()>);
+pub struct Window(PhantomData<*mut ()>);
 
-impl Tether {
-    /// Creates a new window builder.
-    ///
-    /// This is usually one of the first functions you call in your application.
-    pub fn builder() -> Options<'static, ()> {
-        Options::new()
-    }
-
+impl Window {
     /// Evaluates some JavaScript in the current webpage.
     pub fn eval(self, js: &str) {
         platform::eval(js)
@@ -62,25 +77,7 @@ impl Tether {
         platform::load(html)
     }
 
-    /// Schedules the provided function to eventually run on the UI thread.
-    ///
-    /// This is the only way to change the user interface from another thread.
-    pub fn dispatch<F: FnOnce(Tether) + Send + 'static>(f: F) {
-        if LOADED.load(SeqCst) {
-            platform::dispatch(f)
-        }
-    }
-
-    /// Opens the window with the provided options.
-    pub fn start<H: Handler>(opts: Options<H>) -> ! {
-        if !LOADED.swap(true, SeqCst) {
-            platform::start(opts)
-        } else {
-            panic!("Tried to start Tether more than once!")
-        }
-    }
-
-    unsafe fn new() -> Tether {
-        Tether(PhantomData)
+    unsafe fn new() -> Window {
+        Window(PhantomData)
     }
 }
