@@ -30,7 +30,7 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
 
     let window = gtk::Window::new(WindowType::Toplevel);
 
-    window.set_default_size(opts.width as i32, opts.height as i32);
+    window.set_size_request(opts.width as i32, opts.height as i32);
 
     // Make the web view.
 
