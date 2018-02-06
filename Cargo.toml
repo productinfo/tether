@@ -5,6 +5,7 @@ authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 description = "Extremely simple bindings to an OS web view."
 repository = "https://github.com/quadrupleslap/tether"
 keywords = ["web", "gui", "webview", "desktop"]
+license = "MIT"
 
 [features]
 stub = []
