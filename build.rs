@@ -2,9 +2,7 @@
 extern crate cfg_if;
 
 cfg_if! {
-    if #[cfg(feature = "stub")] {
-        fn main() {}
-    } else if #[cfg(target_os = "windows")] {
+    if #[cfg(target_os = "windows")] {
         extern crate cc;
 
         fn main() {

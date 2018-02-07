@@ -1,14 +1,11 @@
 [package]
 name = "tether"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 description = "Extremely simple bindings to an OS web view."
 repository = "https://github.com/quadrupleslap/tether"
 keywords = ["web", "gui", "webview", "desktop"]
 license = "MIT"
-
-[features]
-stub = []
 
 [dependencies]
 cfg-if = "0.1"
@@ -16,8 +13,10 @@ cfg-if = "0.1"
 [build-dependencies]
 cfg-if = "0.1"
 
+# --- Docs.rs --- #
+
 [package.metadata.docs.rs]
-features = ["stub"]
+default-target = "x86_64-apple-darwin"
 
 # --- Windows --- #
 
@@ -35,7 +34,7 @@ objc = "0.2"
 
 #TODO: Remember, additional platforms need to be added to the exclusion list below.
 
-[target.'cfg(not(any(feature = "stub", target_os = "windows", target_os = "macos")))'.dependencies]
+[target.'cfg(not(any(target_os = "windows", target_os = "macos")))'.dependencies]
 glib = { version = "0.4" }
 gtk = { version = "0.3", features = ["v3_10"] }
 webkit2gtk = { version = "0.3", features = ["v2_8"] }

@@ -11,9 +11,7 @@
 extern crate cfg_if;
 
 cfg_if! {
-    if #[cfg(feature = "stub")] {
-        // Why would a stub have dependencies? =\
-    } else if #[cfg(target_os = "windows")] {
+    if #[cfg(target_os = "windows")] {
         // No runtime dependencies.
     } else if #[cfg(target_os = "macos")] {
         extern crate cocoa;
