@@ -13,11 +13,6 @@ cfg-if = "0.1"
 [build-dependencies]
 cfg-if = "0.1"
 
-# --- Docs.rs --- #
-
-[package.metadata.docs.rs]
-default-target = "x86_64-apple-darwin"
-
 # --- Windows --- #
 
 [target.'cfg(target_os = "windows")'.build-dependencies]
