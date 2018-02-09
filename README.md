@@ -37,9 +37,9 @@ different command prompts, so make sure you use the right one when compiling.
 
 | Operating System | Library    | System Requirements |
 | ---------------- | ---------- | ------------------- |
-| Windows          | UWP        | Windows 10+         |
-| macOS            | WebKit     | macOS 10.10+        |
-| Anything Else    | Webkit2GTK | Webkit2GTK 2.8+     |
+| Windows          | UWP        | Windows 10          |
+| macOS            | WebKit     | macOS 10.10         |
+| Anything Else    | Webkit2GTK | Webkit2GTK 2.8      |
 
 # Comparison with zserge/webview
 
