@@ -5,7 +5,7 @@
 - [Getting Started](#getting-started)
 - [Usage on Windows](#usage-on-windows)
 - [Platform Information](#platform-information)
-- [Comparison with zserge/webview](#comparison-with-zserge-webview)
+- [Comparison with zserge/webview](#comparison-with-zsergewebview)
 
 Extremely simple bindings to the OS' web view, for anyone who wants to make a
 GUI application in Rust.
@@ -41,7 +41,7 @@ different command prompts, so make sure you use the right one when compiling.
 | macOS            | WebKit     | macOS 10.10         |
 | Anything Else    | Webkit2GTK | Webkit2GTK 2.8      |
 
-# Comparison with zserge/webview
+## Comparison with zserge/webview
 
 In my opinion the main benefit of this library is that it's a **lot more
 ergonomic**, but there are some technical differences, too.
