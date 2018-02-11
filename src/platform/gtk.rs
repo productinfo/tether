@@ -4,6 +4,8 @@ use std::cell::RefCell;
 use std::process;
 use std::rc::Rc;
 use webkit2gtk::{
+    ContextMenuExt,
+    ContextMenuItemExt,
     UserContentInjectedFrames,
     UserContentManager,
     UserContentManagerExt,
@@ -40,6 +42,52 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
         &context,
         &scripts,
     );
+
+    // Whitelist items in the context menu.
+
+    webview.connect_context_menu(|_, menu, _, _| {
+        use webkit2gtk::ContextMenuAction::*;
+
+        let len = menu.get_n_items();
+
+        for i in (0..len).rev() {
+            let item = menu.get_item_at_position(i).unwrap();
+            match item.get_stock_action() {
+                NoAction
+                | CopyLinkToClipboard
+                | CopyImageToClipboard
+                | CopyImageUrlToClipboard
+                | Copy
+                | Cut
+                | Paste
+                | Delete
+                | SelectAll
+                | InputMethods
+                | Unicode
+                | SpellingGuess
+                | NoGuessesFound
+                | IgnoreSpelling
+                | LearnSpelling
+                | IgnoreGrammar
+                | FontMenu
+                | Bold
+                | Italic
+                | Underline
+                | Outline
+                | CopyVideoLinkToClipboard
+                | CopyAudioLinkToClipboard
+                | ToggleMediaControls
+                | ToggleMediaLoop
+                | EnterVideoFullscreen
+                | MediaPlay
+                | MediaPause
+                | MediaMute => (),
+                _ => menu.remove(&item)
+            }
+        }
+
+        false
+    });
 
     // Setup the window title.
 
