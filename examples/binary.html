@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Loading binary files, such as WASM.</title>
+</head>
+<body>
+<span id="answer">Determining the answer to life...</span>
+<script>
+// The Rust side will call main with the port number of the local server.
+function main(port) {
+    let imports = {
+        imports: {
+            alert: s => {
+                document.getElementById('answer').textContent = 'Using the power of WASM, we have determined that the answer to life is ' + s + '.';
+            }
+        }
+    };
+
+    // This is the important part - use the URL `http://127.0.0.1:PORT` to access the local server.
+    fetch('http://127.0.0.1:' + port + '/life.wasm')
+        .then(res => res.arrayBuffer())
+        .then(buf => WebAssembly.instantiate(buf, imports))
+        .then(obj => obj.instance.exports.something());
+}
+
+// Tell the Rust side that the JavaScript side is ready to start.
+window.tether('load');
+</script>
+</body>
+</html>
