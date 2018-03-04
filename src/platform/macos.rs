@@ -170,7 +170,6 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
         let WKUserScript = Class::get("WKUserScript").unwrap();
         let WKWebViewConfiguration = Class::get("WKWebViewConfiguration").unwrap();
 
-        let str_contentView = NSString::new("contentView");
         let str_x = NSString::new("x");
         let str_script = NSString::new("window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); };");
 
@@ -235,8 +234,8 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
             backing:NSBackingStoreBuffered
             defer:NO];
 
-        msg_send![window, setMinSize:frame.size];
-        msg_send![window, setValue:webview forKey:str_contentView];
+        msg_send![window, setContentMinSize:frame.size];
+        msg_send![window, setContentView:webview];
         msg_send![window, center];
         msg_send![window, makeKeyAndOrderFront:nil];
 
