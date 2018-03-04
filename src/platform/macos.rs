@@ -227,12 +227,15 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
             window_style |= NSWindowStyleMask::NSFullScreenWindowMask;
         }
 
+        let frame: NSRect = *this.get_ivar::<NSRect>("frame");
+
         let window: id = msg_send![window,
-            initWithContentRect:*this.get_ivar::<NSRect>("frame")
+            initWithContentRect:frame
             styleMask:window_style
             backing:NSBackingStoreBuffered
             defer:NO];
 
+        msg_send![window, setMinSize:frame.size];
         msg_send![window, setValue:webview forKey:str_contentView];
         msg_send![window, center];
         msg_send![window, makeKeyAndOrderFront:nil];
@@ -249,7 +252,7 @@ extern "C" fn app_will_kys(this: &mut Object, _: Sel, _: *mut Object) -> c_int {
         let handler = this.get_mut_ivar::<Speedwagon>("handler");
         ((*handler).suspend)((*handler).data);
     }
-    
+
     NSApplicationTerminateReply::NSTerminateNow as c_int
 }
 
