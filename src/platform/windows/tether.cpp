@@ -56,7 +56,7 @@ public:
 internal:
 
     Platform::String^ html;
-    Size size;
+    Size size, min_size;
     bool fullscreen;
     Handler handler;
 
@@ -84,6 +84,7 @@ protected:
         if (Window::Current->Content) return;
 
         ApplicationView::PreferredLaunchViewSize = size;
+        ApplicationView::GetForCurrentView()->SetPreferredMinSize(min_size);
         ApplicationView::PreferredLaunchWindowingMode = fullscreen
             ? ApplicationViewWindowingMode::FullScreen
             : ApplicationViewWindowingMode::PreferredLaunchViewSize;
@@ -122,6 +123,8 @@ extern "C" {
         tether_string html,
         uintptr_t width,
         uintptr_t height,
+        uintptr_t min_width,
+        uintptr_t min_height,
         int fullscreen,
 
         void* hdata,
@@ -134,6 +137,7 @@ extern "C" {
             Program^ program = ref new Program();
             program->html = convert_string(html);
             program->size = Size((float) width, (float) height);
+            program->min_size = Size((float) min_width, (float) min_height);
             program->fullscreen = fullscreen;
             program->handler.data = hdata;
             program->handler.rmessage = hmessage;

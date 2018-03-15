@@ -4,10 +4,14 @@ use std::os::raw::{c_int, c_void};
 
 pub fn start<H: Handler>(opts: Options<H>) -> ! {
     unsafe {
+        let min_size = opts.minimum_size.unwrap_or((opts.width, opts.height));
+
         tether_start(
             TetherString::new(opts.html),
             opts.width,
             opts.height,
+            min_size.0,
+            min_size.1,
             if opts.fullscreen { 1 } else { 0 },
 
             Box::into_raw(Box::new(opts.handler)) as *mut c_void,
@@ -77,6 +81,8 @@ extern "C" {
         html: TetherString,
         width: usize,
         height: usize,
+        min_width: usize,
+        min_height: usize,
         fullscreen: c_int,
 
         han_data: *mut c_void,

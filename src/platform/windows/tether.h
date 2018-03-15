@@ -19,6 +19,8 @@ extern "C" {
         tether_string html,
         uintptr_t width,
         uintptr_t height,
+        uintptr_t min_width,
+        uintptr_t min_height,
         int fullscreen,
 
         void* han_data,
