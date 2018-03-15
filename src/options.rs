@@ -12,6 +12,11 @@ pub struct Options<'a, H> {
 
 impl Options<'static, ()> {
     /// Creates a new configuration with sensible defaults.
+    ///
+    /// - The HTML is an empty string.
+    /// - The initial window size is 640x480.
+    /// - The minimum window size is the inital window size.
+    /// - The window is not initially in fullscreen mode.
     pub fn new() -> Self {
         Self {
             html: "",
@@ -37,7 +42,7 @@ impl<'a, H> Options<'a, H> {
         Options { html, width, height, fullscreen, handler, minimum_size }
     }
 
-    /// Suggests to the OS a minimum size. The suggestion may be ignored.
+    /// Sets the preferred minimum size.
     pub fn minimum_size(self, width: usize, height: usize) -> Options<'a, H> {
         let minimum_size = Some((width, height));
         let Options { html, width, height, fullscreen, handler, .. } = self;
