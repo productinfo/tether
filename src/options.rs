@@ -7,6 +7,7 @@ pub struct Options<'a, H> {
     pub(crate) height: usize,
     pub(crate) fullscreen: bool,
     pub(crate) handler: H,
+    pub(crate) minimum_size: Option<(usize, usize)>,
 }
 
 impl Options<'static, ()> {
@@ -18,6 +19,7 @@ impl Options<'static, ()> {
             height: 480,
             fullscreen: false,
             handler: (),
+            minimum_size: None,
         }
     }
 }
@@ -25,26 +27,33 @@ impl Options<'static, ()> {
 impl<'a, H> Options<'a, H> {
     /// Sets the initially displayed HTML.
     pub fn html<'aa>(self, html: &'aa str) -> Options<'aa, H> {
-        let Options { width, height, fullscreen, handler, .. } = self;
-        Options { html, width, height, fullscreen, handler }
+        let Options { width, height, fullscreen, handler, minimum_size, .. } = self;
+        Options { html, width, height, fullscreen, handler, minimum_size }
     }
 
     /// Sets the preferred size.
     pub fn size(self, width: usize, height: usize) -> Options<'a, H> {
-        let Options { html, fullscreen, handler, .. } = self;
-        Options { html, width, height, fullscreen, handler }
+        let Options { html, fullscreen, handler, minimum_size, .. } = self;
+        Options { html, width, height, fullscreen, handler, minimum_size }
+    }
+
+    /// Suggests to the OS a minimum size. The suggestion may be ignored.
+    pub fn minimum_size(self, width: usize, height: usize) -> Options<'a, H> {
+        let minimum_size = Some((width, height));
+        let Options { html, width, height, fullscreen, handler, .. } = self;
+        Options { html, width, height, fullscreen, handler, minimum_size }
     }
 
     /// Sets whether the window should initially be in fullscreen mode.
     pub fn fullscreen(self, fullscreen: bool) -> Options<'a, H> {
-        let Options { html, width, height, handler, .. } = self;
-        Options { html, width, height, fullscreen, handler }
+        let Options { html, width, height, handler, minimum_size, .. } = self;
+        Options { html, width, height, fullscreen, handler, minimum_size }
     }
 
     /// Sets the event handler.
     pub fn handler<HH>(self, handler: HH) -> Options<'a, HH> {
-        let Options { html, width, height, fullscreen, .. } = self;
-        Options { html, width, height, fullscreen, handler }
+        let Options { html, width, height, fullscreen, minimum_size, .. } = self;
+        Options { html, width, height, fullscreen, handler, minimum_size }
     }
 }
 
