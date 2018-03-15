@@ -68,12 +68,6 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
                     (*h).suspend(Window::new())
                 }
             }; suspend::<H> },
-            drop: { extern "C" fn drop<H: Handler>(h: *mut c_void) {
-                unsafe {
-                    let h = h as *mut H;
-                    Box::from_raw(h);
-                }
-            }; drop::<H> },
         };
 
         let frame = NSRect::new(
@@ -151,7 +145,6 @@ unsafe fn register_delegate(NSObject: &Class) -> &'static Class {
     decl.add_method(sel!(applicationDidFinishLaunching:), application_did_finish_launching as extern "C" fn(&mut Object, Sel, *mut Object));
     decl.add_method(sel!(applicationShouldTerminateAfterLastWindowClosed:), should_app_kys as extern "C" fn(&mut Object, Sel, *mut Object) -> BOOL);
     decl.add_method(sel!(applicationShouldTerminate:), app_will_kys as extern "C" fn(&mut Object, Sel, *mut Object) -> c_int);
-    decl.add_method(sel!(dealloc), dealloc_delegate as extern "C" fn(&mut Object, Sel));
     decl.add_method(sel!(userContentController:didReceiveScriptMessage:), receive_message as extern "C" fn(&mut Object, Sel, *mut Object, *mut Object));
     decl.add_method(sel!(observeValueForKeyPath:ofObject:change:context:), handle_change as extern "C" fn(&mut Object, Sel, *mut Object, *mut Object, *mut Object, *mut c_void));
 
@@ -272,16 +265,6 @@ extern "C" fn receive_message(this: &mut Object, _: Sel, _: *mut Object, msg: *m
     }
 }
 
-extern "C" fn dealloc_delegate(this: &mut Object, _: Sel) {
-    //TODO: The deallocator never seems to be called. ;_;
-    unsafe {
-        let NSObject = Class::get("NSObject").unwrap();
-        msg_send![*this.get_mut_ivar::<id>("html"), release];
-        ptr::drop_in_place(this.get_mut_ivar::<Speedwagon>("handler"));
-        msg_send![super(this, NSObject), release];
-    }
-}
-
 extern "C" fn handle_change(_: &mut Object, _: Sel, _: *mut Object, obj: *mut Object, _: *mut Object, _: *mut c_void) {
     unsafe {
         let title: id = msg_send![obj, title];
@@ -349,13 +332,6 @@ struct Speedwagon {
     data: *mut c_void,
     message: extern "C" fn(*mut c_void, &str),
     suspend: extern "C" fn(*mut c_void),
-    drop: extern "C" fn(*mut c_void),
-}
-
-impl Drop for Speedwagon {
-    fn drop(&mut self) {
-        (self.drop)(self.data);
-    }
 }
 
 unsafe impl Encode for Speedwagon {
