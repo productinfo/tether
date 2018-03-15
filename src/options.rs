@@ -2,16 +2,11 @@ use {start, Handler};
 
 /// Provides some configuration options for the window.
 pub struct Options<'a, H> {
-    /// The initially displayed HTML.
-    pub html: &'a str,
-    /// The preferred width.
-    pub width: usize,
-    /// The preferred height.
-    pub height: usize,
-    /// Whether the window should initially be in fullscreen mode.
-    pub fullscreen: bool,
-    /// The event handler.
-    pub handler: H,
+    pub(crate) html: &'a str,
+    pub(crate) width: usize,
+    pub(crate) height: usize,
+    pub(crate) fullscreen: bool,
+    pub(crate) handler: H,
 }
 
 impl Options<'static, ()> {
