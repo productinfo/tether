@@ -54,6 +54,8 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
 
         let html = NSString::new(opts.html);
 
+        let min_size = opts.minimum_size.unwrap_or((opts.width, opts.height));
+
         let spw = Speedwagon {
             data: Box::into_raw(Box::new(opts.handler)) as *mut c_void,
             message: { extern "C" fn message<H: Handler>(h: *mut c_void, s: &str) {
@@ -75,6 +77,8 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
                 NSPoint::new(0.0, 0.0),
                 NSSize::new(opts.width as f64, opts.height as f64)
             ),
+
+            min_size: NSSize::new(min_size.0 as f64, min_size.1 as f64),
 
             fullscreen: opts.fullscreen,
         };
@@ -227,7 +231,7 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
             backing:NSBackingStoreBuffered
             defer:NO];
 
-        msg_send![window, setContentMinSize:frame.size];
+        msg_send![window, setContentMinSize:(*spw).min_size];
         msg_send![window, setContentView:webview];
         msg_send![window, center];
         msg_send![window, makeKeyAndOrderFront:nil];
@@ -335,6 +339,7 @@ struct Speedwagon {
 
     fullscreen: bool,
     frame: NSRect,
+    min_size: NSSize,
     html: id,
 }
 
