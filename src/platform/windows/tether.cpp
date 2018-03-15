@@ -30,7 +30,7 @@ public:
     Handler() {
         this->data = NULL;
         this->rmessage = [](void*, tether_string){};
-        this->rdrop = [](void*){};
+        this->rsuspend = [](void*){};
     }
 
     void message(tether_string msg) {
@@ -41,14 +41,9 @@ public:
         rsuspend(data);
     }
 
-    ~Handler() {
-        rdrop(data);
-    }
-
     void* data;
     void (*rmessage) (void*, tether_string);
     void (*rsuspend) (void*);
-    void (*rdrop) (void*);
 };
 
 ref class Program sealed : Application {
@@ -131,8 +126,7 @@ extern "C" {
 
         void* hdata,
         void (*hmessage) (void*, tether_string),
-        void (*hsuspend) (void*),
-        void (*hdrop) (void*)
+        void (*hsuspend) (void*)
     ) {
         RoInitialize(RO_INIT_MULTITHREADED);
 
@@ -144,7 +138,6 @@ extern "C" {
             program->handler.data = hdata;
             program->handler.rmessage = hmessage;
             program->handler.rsuspend = hsuspend;
-            program->handler.rdrop = hdrop;
         }));
     }
 

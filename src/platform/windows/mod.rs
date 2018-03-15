@@ -13,7 +13,6 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
             Box::into_raw(Box::new(opts.handler)) as *mut c_void,
             message::<H>,
             suspend::<H>,
-            release::<H>,
         )
     };
 
@@ -28,11 +27,6 @@ unsafe extern "C" fn message<H: Handler>(handler: *mut c_void, msg: TetherString
 unsafe extern "C" fn suspend<H: Handler>(handler: *mut c_void) {
     let handler = handler as *mut H;
     (*handler).suspend(Window::new());
-}
-
-unsafe extern "C" fn release<H: Handler>(handler: *mut c_void) {
-    let handler = handler as *mut H;
-    Box::from_raw(handler);
 }
 
 pub fn load(html: &str) {
@@ -87,8 +81,7 @@ extern "C" {
 
         han_data: *mut c_void,
         han_message: unsafe extern "C" fn(*mut c_void, TetherString),
-        han_suspend: unsafe extern "C" fn(*mut c_void),
-        han_drop: unsafe extern "C" fn(*mut c_void),
+        han_suspend: unsafe extern "C" fn(*mut c_void)
     );
 
     fn tether_load(html: TetherString);

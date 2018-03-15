@@ -23,8 +23,7 @@ extern "C" {
 
         void* han_data,
         void (*han_message) (void*, tether_string),
-        void (*han_suspend) (void*),
-        void (*han_drop) (void*)
+        void (*han_suspend) (void*)
     );
 
     void tether_load(tether_string html);
