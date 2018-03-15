@@ -54,7 +54,7 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
 
         let html = NSString::new(opts.html);
 
-        let handler = Speedwagon {
+        let spw = Speedwagon {
             data: Box::into_raw(Box::new(opts.handler)) as *mut c_void,
             message: { extern "C" fn message<H: Handler>(h: *mut c_void, s: &str) {
                 unsafe {
@@ -68,18 +68,19 @@ pub fn start<H: Handler>(opts: Options<H>) -> ! {
                     (*h).suspend(Window::new())
                 }
             }; suspend::<H> },
+
+            html: html.raw,
+
+            frame: NSRect::new(
+                NSPoint::new(0.0, 0.0),
+                NSSize::new(opts.width as f64, opts.height as f64)
+            ),
+
+            fullscreen: opts.fullscreen,
         };
 
-        let frame = NSRect::new(
-            NSPoint::new(0.0, 0.0),
-            NSSize::new(opts.width as f64, opts.height as f64));
-
-        msg_send![html.raw, retain];
-
-        ptr::write((*delegate).get_mut_ivar("fullscreen"), opts.fullscreen);
-        ptr::write((*delegate).get_mut_ivar("frame"), frame);
-        ptr::write((*delegate).get_mut_ivar("html"), html.raw);
-        ptr::write((*delegate).get_mut_ivar("handler"), handler);
+        msg_send![html.raw, retain]; // Retain it because it's been moved into `spw`.
+        ptr::write((*delegate).get_mut_ivar("spw"), spw);
 
         // Configure the app.
 
@@ -148,10 +149,7 @@ unsafe fn register_delegate(NSObject: &Class) -> &'static Class {
     decl.add_method(sel!(userContentController:didReceiveScriptMessage:), receive_message as extern "C" fn(&mut Object, Sel, *mut Object, *mut Object));
     decl.add_method(sel!(observeValueForKeyPath:ofObject:change:context:), handle_change as extern "C" fn(&mut Object, Sel, *mut Object, *mut Object, *mut Object, *mut c_void));
 
-    decl.add_ivar::<bool>("fullscreen");
-    decl.add_ivar::<NSRect>("frame");
-    decl.add_ivar::<id>("html");
-    decl.add_ivar::<Speedwagon>("handler");
+    decl.add_ivar::<Speedwagon>("spw");
 
     decl.register()
 }
@@ -165,6 +163,8 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
 
         let str_x = NSString::new("x");
         let str_script = NSString::new("window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); };");
+
+        let spw = this.get_ivar::<Speedwagon>("spw");
 
         // Create things.
 
@@ -198,7 +198,7 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
             context:ptr::null_mut::<c_void>()];
 
         msg_send![webview,
-            loadHTMLString:*this.get_ivar::<id>("html")
+            loadHTMLString:(*spw).html
             baseURL:nil];
 
         WEBVIEW.with(|cell| {
@@ -215,11 +215,11 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
             | NSWindowStyleMask::NSMiniaturizableWindowMask
             | NSWindowStyleMask::NSResizableWindowMask;
 
-        if *this.get_ivar::<bool>("fullscreen") {
+        if (*spw).fullscreen {
             window_style |= NSWindowStyleMask::NSFullScreenWindowMask;
         }
 
-        let frame: NSRect = *this.get_ivar::<NSRect>("frame");
+        let frame: NSRect = (*spw).frame;
 
         let window: id = msg_send![window,
             initWithContentRect:frame
@@ -241,7 +241,7 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
 
 extern "C" fn app_will_kys(this: &mut Object, _: Sel, _: *mut Object) -> c_int {
     unsafe {
-        let handler = this.get_mut_ivar::<Speedwagon>("handler");
+        let handler = this.get_mut_ivar::<Speedwagon>("spw");
         ((*handler).suspend)((*handler).data);
     }
 
@@ -255,7 +255,7 @@ extern "C" fn should_app_kys(_: &mut Object, _: Sel, _: *mut Object) -> BOOL {
 extern "C" fn receive_message(this: &mut Object, _: Sel, _: *mut Object, msg: *mut Object) {
     unsafe {
         let NSString = Class::get("NSString").unwrap();
-        let handler = this.get_mut_ivar::<Speedwagon>("handler");
+        let handler = this.get_mut_ivar::<Speedwagon>("spw");
         let body: id = msg_send![msg, body];
 
         if YES == msg_send![body, isKindOfClass:NSString] {
@@ -332,6 +332,10 @@ struct Speedwagon {
     data: *mut c_void,
     message: extern "C" fn(*mut c_void, &str),
     suspend: extern "C" fn(*mut c_void),
+
+    fullscreen: bool,
+    frame: NSRect,
+    html: id,
 }
 
 unsafe impl Encode for Speedwagon {
