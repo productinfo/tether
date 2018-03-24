@@ -6,8 +6,8 @@ stages:
   - build
 
 before_script:
-  - sudo apt-get update -yq
-  - sudo apt-get install -y libgtk-3-dev
+  - apt-get update -yq
+  - apt-get install -y libgtk-3-dev
 
 test:
   stage: test
