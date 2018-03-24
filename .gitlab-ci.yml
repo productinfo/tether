@@ -5,9 +5,13 @@ stages:
   - doc
   - build
 
+variables:
+  CARGO_HOME: $CI_PROJECT_DIR/cargo
+  APT_CACHE_DIR: $CI_PROJECT_DIR/apt
+
 before_script:
   - apt-get update -yq
-  - apt-get install -y libgtk-3-dev
+  - apt-get install -o dir::cache::archives="$APT_CACHE_DIR" -y libwebkit2gtk-4.0-dev
 
 test:
   stage: test
@@ -27,3 +31,9 @@ pages:
       - public
   only:
     - master
+
+cache:
+  paths:
+    - apt/
+    - cargo/
+    - target/
