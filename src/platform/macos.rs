@@ -166,7 +166,12 @@ extern "C" fn application_did_finish_launching(this: &mut Object, _: Sel, _: *mu
         let WKWebViewConfiguration = Class::get("WKWebViewConfiguration").unwrap();
 
         let str_x = NSString::new("x");
-        let str_script = NSString::new("window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); };");
+
+        // All credit for the context menu disabling code goes to @fullreset.
+        let str_script = NSString::new("\
+        	window.tether = function (s) { window.webkit.messageHandlers.x.postMessage(s); };\
+        	document.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });\
+        ");
 
         let spw = this.get_ivar::<Speedwagon>("spw");
 

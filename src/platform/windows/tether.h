@@ -19,12 +19,13 @@ extern "C" {
         tether_string html,
         uintptr_t width,
         uintptr_t height,
+        uintptr_t min_width,
+        uintptr_t min_height,
         int fullscreen,
 
         void* han_data,
         void (*han_message) (void*, tether_string),
-        void (*han_suspend) (void*),
-        void (*han_drop) (void*)
+        void (*han_suspend) (void*)
     );
 
     void tether_load(tether_string html);
