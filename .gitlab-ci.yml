@@ -15,6 +15,7 @@ test:
 pages:
   stage: doc
   script:
+    - apt-get install libgtk-3-dev
     - cargo doc --no-deps
     - mv target/doc public
     - echo '<meta http-equiv="refresh" content="0; url=tether">' > public/index.html
