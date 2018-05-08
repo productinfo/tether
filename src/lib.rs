@@ -34,9 +34,9 @@ mod handler;
 mod options;
 mod platform;
 
-pub use escape::*;
-pub use handler::*;
-pub use options::*;
+pub use escape::escape;
+pub use handler::Handler;
+pub use options::Options;
 
 static LOADED: AtomicBool = ATOMIC_BOOL_INIT;
 

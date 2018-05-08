@@ -17,7 +17,7 @@ use std::fmt::Write;
 ///
 /// win.eval(&format!("callback({});", tether::escape(string)));
 /// ```
-pub fn escape(string: &str) -> Escaper {
+pub fn escape<'a>(string: &'a str) -> impl fmt::Display + 'a {
     Escaper(string)
 }
 
@@ -26,7 +26,6 @@ pub fn escape(string: &str) -> Escaper {
 // RETURN), U+2028 (LINE SEPARATOR), U+2029 (PARAGRAPH SEPARATOR), and U+000A
 // (LINE FEED)." - ES6 Specification
 
-#[doc(hidden)]
 pub struct Escaper<'a>(&'a str);
 
 const SPECIAL: &'static [char] = &[
@@ -50,7 +49,9 @@ impl<'a> fmt::Display for Escaper<'a> {
                     f.write_str(&string[..i])?;
                 }
 
-                f.write_str(match string[i..].chars().next().unwrap() { //TODO: This line is gross.
+                let mut chars = string[i..].chars();
+
+                f.write_str(match chars.next().unwrap() {
                     '\n' => "\\n",
                     '\r' => "\\r",
                     '\'' => "\\'",
@@ -60,7 +61,7 @@ impl<'a> fmt::Display for Escaper<'a> {
                     _ => unreachable!()
                 })?;
 
-                string = &string[i + 1..];
+                string = chars.as_str();
             } else {
                 f.write_str(string)?;
                 break;
@@ -71,4 +72,11 @@ impl<'a> fmt::Display for Escaper<'a> {
 
         Ok(())
     }
+}
+
+#[test]
+fn test() {
+    let plain = "ABC \n\r' abc \\  \u{2028}   \u{2029}123";
+    let escaped = escape(plain).to_string();
+    assert!(escaped == "'ABC \\n\\r\\' abc \\\\  \\u2028   \\u2029123'");
 }
