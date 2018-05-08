@@ -17,7 +17,7 @@ use std::fmt::Write;
 ///
 /// win.eval(&format!("callback({});", tether::escape(string)));
 /// ```
-pub fn escape<'a>(string: &'a str) -> impl fmt::Display + 'a {
+pub fn escape<'a>(string: &'a str) -> Escaper {
     Escaper(string)
 }
 
